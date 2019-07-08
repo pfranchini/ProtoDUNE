@@ -1,0 +1,89 @@
+#include "services_dune.fcl"
+
+#process_name: OnlineMonitor
+process_name: SSPDumptest
+
+services:
+{
+  TimeTracker:       {}
+  RandomNumberGenerator: {} 
+  message:              @local::dune_message_services_prod_debug
+  FileCatalogMetadata:  @local::art_file_catalog_mc
+#                        @table::protodune_services
+ ExptGeoHelperInterface:       @local::dune_geometry_helper
+ Geometry:                     @local::protodune_geo
+ DetectorClocksService:        @local::dunefd_detectorclocks
+ DetectorPropertiesService:    @local::protodune_detproperties
+ LArPropertiesService:         @local::dunefd_properties
+# LArFFT:                       @local::dunefd_larfft
+ DatabaseUtil:                 @local::dunefd_database
+# BackTracker:                  @local::dunefd_backtracker
+# SpaceCharge:                  @local::protodune_spacecharge
+# NuRandomService:              @local::dune_seedservice
+# SignalShapingServiceDUNE:     @local::dunefd_signalshapingservice
+ ChannelStatusService:         @local::dunefd_channel_status
+ ChannelGroupService:          @local::changroup_apa
+
+  TFileService: { fileName: "onlinemonit.root" }
+
+}
+
+
+# source is the dispatcher running on 5266 in another shell
+#source:
+#{
+#
+#  module_type: TransferInput
+#
+#  # The timeout shouldn't be much smaller than the period between events, otherwise
+#  # there's a spew of timeout messages
+#
+#  timeoutInUsecs: 10000000
+#
+#  dispatcherHost: localhost
+#  dispatcherPort: 5266
+#
+#  transfer_plugin: {
+#
+#    transferPluginType: Shmem
+#
+#    unique_label: "shmem1"
+#
+#      shm_key: 0x40471452
+#
+#      max_fragment_size_words: 2097152
+#      first_event_builder_rank: 0
+#    }
+#}
+
+
+#source is now a root file
+source:
+{
+  module_type: RootInput
+  maxEvents: -1
+  # fileNames: ["input_file.root"]
+  ## fileNames: ["/afs/cern.ch/user/s/sergiand/public/g4single_detsim.root"]
+  fileNames: ["data/pdune_r1000092_sr01_20170630T110117_1_0.root"]      ## Jen PD DAQ data 
+
+}
+
+
+
+outputs:{}
+
+physics:
+{
+  analyzers:
+  {
+    rawdraw: 
+    {
+      module_type:     "SSPDump"
+      TPCInputModule:  "daq"
+      TPCInstanceName: ""
+    }
+  }
+//  analysis: [ rawdraw ] //Directory for histograms
+//  end_paths: [ analysis ]
+}
+

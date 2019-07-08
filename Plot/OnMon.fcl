@@ -1,0 +1,61 @@
+#include "services_dune.fcl"
+
+#This is the default configuration file
+#include "./RawDecoder.fcl"
+
+services:
+{
+  message:              @local::dune_message_services_prod_debug
+  TFileServiceOM: { fileName: "RawDecoder_hist.root" }
+}
+
+physics:
+{
+  producers:
+  {
+
+  ssprawdecoder: @local::ssp_raw_decoder  
+
+  }
+
+  #Create path to run module
+  produce: [ ssprawdecoder ]
+  
+  output: [ out1 ]
+  trigger_paths : [ produce ]
+  end_paths: [ ]
+}
+
+
+outputs:
+{
+  out1:
+  {
+    module_type: FileDumperOutput
+    wantProductFriendlyClassName: true
+    module_type: RootOutput
+    # fileName: "RawDecoder.root"
+    # fileName: "RawDecoder_hist.root"	
+  }
+
+}
+
+
+source:
+{
+  module_type: RootInput
+#  fileNames: [ "/afs/cern.ch/user/s/sergiand/workspace/artdaq_devel/pdune_r1000077_sr01_20170629T181646_1_0.root" ]
+#  fileNames: [ "/home/phswbb/DUNE/software/PD/data/pdune_r1000092_sr01_20170630T110117_1_0.root" ]
+  fileNames: [ "/home/phswbb/DUNE/software/PD/data/np04_raw_run000401_1_dl1.root", "/home/phswbb/DUNE/software/PD/data/np04_raw_run000401_2_dl1.root", "/home/phswbb/DUNE/software/PD/data/np04_raw_run000401_3_dl1.root", "/home/phswbb/DUNE/software/PD/data/np04_raw_run000401_4_dl1.root", "/home/phswbb/DUNE/software/PD/data/np04_raw_run000401_5_dl1.root", "/home/phswbb/DUNE/software/PD/data/np04_raw_run000401_6_dl1.root"]
+# fileNames: [ "/home/phswbb/DUNE/software/PD/data/np04_raw_run000423_1_dl1.root", "/home/phswbb/DUNE/software/PD/data/np04_raw_run000423_2_dl1.root", "/home/phswbb/DUNE/software/PD/data/np04_raw_run000423_3_dl1.root", "/home/phswbb/DUNE/software/PD/data/np04_raw_run000423_4_dl1.root" ]
+# fileNames: [ "/home/phswbb/DUNE/software/PD/data/np04_raw_run000424_1_dl1.root" ]
+# fileNames: [ "/home/phswbb/DUNE/software/PD/data/np04_raw_run000428_1_dl1.root" ]
+
+
+  maxEvents : -1
+
+}
+
+
+process_name: RunRawDecoder
+ 

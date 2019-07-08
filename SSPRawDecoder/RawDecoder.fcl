@@ -1,0 +1,81 @@
+BEGIN_PROLOG
+
+timing_raw_decoder:
+{
+  module_type: "TimingRawDecoder"
+  RawDataLabel: "daq"
+  OutputDataLabel: "daq"
+  UseChannelMap: "true"
+  Debug: "false"
+  MakeTree: "false"
+}
+
+rce_raw_decoder:
+{
+  module_type: "RceRawDecoder"
+  RawDataLabel: "daq"
+  OutputDataLabel: "daq"
+  ExpectContainerFragments: true
+}
+
+felix_raw_decoder:
+{
+  module_type: "FelixRawDecoder"
+  RawDataLabel: "daq"
+  OutputDataLabel: "daq"
+  ExpectContainerFragments: false
+}
+
+ssp_raw_decoder:
+{
+
+  module_type: "SSPRawDecoder"
+  RawDataLabel: "daq"
+  OutputDataLabel: "daq"
+  UseChannelMap: "true"
+  Debug: "true"
+  MakeTree: "false"
+  verbose_metadata: true
+  verbose_adcs: 2048
+  ExpectContainerFragments: true
+
+  number_of_fragments: 4  // number of SSPs
+  number_of_packets: 12   // channels per SSP
+
+  SSP_i1: 4    # samples used to calculate the pedestal
+  SSP_i2: 500  # samples used to calculate the area
+  SSP_m1: 10   # samples used to calculate the peak height
+  SSP_m2: 10   # (unused in the code)
+
+  SSP_min_time: 0    # min time of the run
+  SSP_max_time: 336  # max time of the run
+  SSP_ADC: 1000      # number of ADC sample
+  SSP_ADC_min: 1500  # max ADC value
+  SSP_ADC_max: 1650  # max ADC value
+
+}
+
+online_monitor:
+{
+  module_type:     "OnlineMonitor"
+  TPCInputModule:  "rcerawdecoder"
+  TPCInstanceName: "daq"
+  FELIXInputModule:  "felixrawdecoder"
+  FELIXInstanceName: "daq"
+}
+
+tpc_fft:
+{
+  module_type:     "TpcFFT"
+  TPCInputModule:  "rcerawdecoder"
+  TPCInstanceName: "daq"  
+}
+
+ssp_evt_analyzer:
+{
+  module_type:     "PDRawEVD"
+  SSPInputModule:  "ssprawdecoder"
+  SSPInstanceName: "daq"  
+}
+
+END_PROLOG
